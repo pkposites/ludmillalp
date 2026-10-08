@@ -123,6 +123,67 @@ if ("IntersectionObserver" in window) {
   $$(".reveal").forEach((el) => el.classList.add("is-visible"));
 }
 
+/* ---------- Abas das plantas ---------- */
+const tabs = $$(".tab");
+function selectTab(index, focus = false) {
+  tabs.forEach((t, i) => {
+    const active = i === index;
+    t.classList.toggle("is-active", active);
+    t.setAttribute("aria-selected", String(active));
+    t.tabIndex = active ? 0 : -1;
+    const panel = document.getElementById(t.getAttribute("aria-controls"));
+    panel.hidden = !active;
+    if (active) panel.classList.add("is-visible");
+  });
+  if (focus) tabs[index].focus();
+}
+tabs.forEach((tab, i) => {
+  tab.addEventListener("click", () => selectTab(i));
+  tab.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") selectTab((i + 1) % tabs.length, true);
+    if (e.key === "ArrowLeft") selectTab((i - 1 + tabs.length) % tabs.length, true);
+  });
+});
+
+/* ---------- Galeria / lightbox ---------- */
+const galleryItems = $$(".gallery__item");
+const lightbox = $("#lightbox");
+const lbImg = $("#lbImg");
+const lbCaption = $("#lbCaption");
+let lbIndex = 0;
+let lastFocus = null;
+
+function showSlide(i) {
+  lbIndex = (i + galleryItems.length) % galleryItems.length;
+  const img = $("img", galleryItems[lbIndex]);
+  lbImg.src = img.src;
+  lbImg.alt = img.alt;
+  lbCaption.textContent = $("span", galleryItems[lbIndex]).textContent;
+}
+function openLightbox(i) {
+  lastFocus = document.activeElement;
+  showSlide(i);
+  lightbox.hidden = false;
+  document.body.style.overflow = "hidden";
+  $("#lbClose").focus();
+}
+function closeLightbox() {
+  lightbox.hidden = true;
+  document.body.style.overflow = "";
+  if (lastFocus) lastFocus.focus();
+}
+galleryItems.forEach((item, i) => item.addEventListener("click", () => openLightbox(i)));
+$("#lbClose").addEventListener("click", closeLightbox);
+$("#lbPrev").addEventListener("click", () => showSlide(lbIndex - 1));
+$("#lbNext").addEventListener("click", () => showSlide(lbIndex + 1));
+lightbox.addEventListener("click", (e) => e.target === lightbox && closeLightbox());
+document.addEventListener("keydown", (e) => {
+  if (lightbox.hidden) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowRight") showSlide(lbIndex + 1);
+  if (e.key === "ArrowLeft") showSlide(lbIndex - 1);
+});
+
 /* ---------- Quiz ---------- */
 const form = $("#quizForm");
 const steps = $$(".quiz__step", form);

@@ -15,8 +15,14 @@ Landing page estática (HTML + CSS + JS, sem build) com:
 |--------------------------|---------------------------------------------|
 | `ludmilla-retrato.jpg`   | ✅ Retrato de frente, usado no topo e no CTA final |
 | `ludmilla-sofa.jpg`      | ✅ Foto sentada ao lado do sofá com a xícara        |
-| `kaslik-fachada.jpg`     | ⏳ Perspectiva da fachada do Kaslik Ibirapuera      |
+| `kaslik-fachada.jpg`     | ✅ Perspectiva da fachada do Kaslik Ibirapuera      |
 | `og-image.jpg`           | ✅ Imagem de compartilhamento (1200×630)            |
+
+Materiais do empreendimento:
+
+- `assets/img/kaslik/`: perspectivas (galeria) e plantas dos studios, recortadas do book
+- `assets/video/kaslik-ibirapuera.mp4`: vídeo do tour (com capa `kaslik-ibirapuera-poster.jpg`)
+- `assets/docs/book-ibirapuera-studios-his.pdf`: book para download na ficha técnica
 
 Enquanto uma foto não existir, a página mostra um espaço reservado elegante no lugar.
 Dica: exporte em JPG com ~1200px no maior lado para carregar rápido.
