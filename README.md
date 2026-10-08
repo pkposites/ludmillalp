@@ -13,9 +13,10 @@ Landing page estática (HTML + CSS + JS, sem build) com:
 
 | Arquivo                  | Foto                                        |
 |--------------------------|---------------------------------------------|
-| `ludmilla-retrato.jpg`   | Retrato de frente (blazer branco), usado no topo e no CTA final |
-| `ludmilla-sofa.jpg`      | Foto sentada ao lado do sofá com a xícara   |
-| `kaslik-fachada.jpg`     | Perspectiva da fachada do Kaslik Ibirapuera |
+| `ludmilla-retrato.jpg`   | ✅ Retrato de frente, usado no topo e no CTA final |
+| `ludmilla-sofa.jpg`      | ✅ Foto sentada ao lado do sofá com a xícara        |
+| `kaslik-fachada.jpg`     | ⏳ Perspectiva da fachada do Kaslik Ibirapuera      |
+| `og-image.jpg`           | ✅ Imagem de compartilhamento (1200×630)            |
 
 Enquanto uma foto não existir, a página mostra um espaço reservado elegante no lugar.
 Dica: exporte em JPG com ~1200px no maior lado para carregar rápido.
@@ -47,5 +48,9 @@ npx serve .
 ```
 
 ## Publicar
+No ar em **https://ludmillaimoveis.netlify.app** (Netlify publica sozinho a cada push).
+
+Favicon: `favicon.svg`, `favicon.ico`, `apple-touch-icon.png` e `icon-512.png` na raiz.
+
 Pode ser publicada como site estático em Netlify, Vercel, GitHub Pages ou Cloudflare Pages:
 é só apontar para a raiz do repositório.
