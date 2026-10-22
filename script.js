@@ -33,7 +33,6 @@ const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
 const brl = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 const whatsappUrl = (text) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`;
-const FAIXA_LABEL = { his: "HIS", hmp: "HMP", livre: "Mercado" };
 
 /* ---------- Dados dinâmicos ---------- */
 $$('[data-cfg="creci"]').forEach((el) => (el.textContent = CONFIG.creci));
@@ -59,9 +58,9 @@ $("#offersGrid").innerHTML = CONFIG.unidades
     return `
       <article class="offer reveal${destaque ? " offer--featured" : ""}">
         ${selo ? `<span class="offer__ribbon${u.selo ? " offer__ribbon--gold" : ""}">${selo}</span>` : ""}
-        <span class="offer__tag">${u.faixa === "livre" ? "Com vaga" : FAIXA_LABEL[u.faixa]}</span>
+        <span class="offer__tag">${u.vaga === "Sem vaga" ? "Sem vaga" : "Com vaga"}</span>
         <h3>${u.nome}</h3>
-        <div class="offer__meta"><span>${u.area}</span><span>Unidade ${u.unidade}</span><span>${u.vaga}</span></div>
+        <div class="offer__meta"><span>${u.area}</span><span>Unidade ${u.unidade}</span></div>
         <div class="offer__prices">
           <div class="offer__from">De <s>${brl(u.de)}</s></div>
           <div class="offer__to"><small>por</small><strong>${brl(u.por)}</strong></div>
@@ -375,7 +374,7 @@ async function submitQuiz() {
 
   const notas = [];
   if (ajuste) notas.push("Ajustei a sugestão ao seu perfil e orçamento. Te mostro outras opções no WhatsApp.");
-  if (u.faixa !== "livre") notas.push(`Unidade ${FAIXA_LABEL[u.faixa]}: sujeita ao enquadramento de renda, que verifico com você.`);
+  if (u.faixa !== "livre") notas.push("Esta unidade tem condição especial sujeita a enquadramento de renda, que verifico com você.");
   if (/FGTS/.test(a.pagamento)) notas.push("Também vou verificar quanto do seu FGTS pode entrar na compra.");
   $("#resultNote").textContent = notas.join(" ");
 
