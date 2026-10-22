@@ -234,7 +234,7 @@ em { font-style: italic; color: var(--gold-400); }
 
 /* ---------- Offers ---------- */
 .offers__grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px 20px; }
-.offers__grid .offer { flex: 1 1 310px; max-width: 380px; }
+.offers__grid .offer { flex: 1 1 calc(50% - 10px); max-width: 520px; }
 .offer {
   position: relative; display: flex; flex-direction: column;
   padding: 28px 26px 26px; border-radius: var(--radius); background: var(--white); border: 1px solid var(--line);

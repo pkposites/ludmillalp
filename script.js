@@ -16,9 +16,8 @@ const CONFIG = {
 
   // Ofertas de outubro. faixa: "his" (até 6 SM), "hmp" (até 10 SM) ou "livre".
   unidades: [
-    { id: "studio-his", nome: "Studio HIS", tipologia: "Studio", faixa: "his", area: "24,98 m²", unidade: "1004", vaga: "Sem vaga", de: 371600, por: 329000 },
-    { id: "studio-hmp", nome: "Studio HMP", tipologia: "Studio", faixa: "hmp", area: "24,87 m²", unidade: "1915", vaga: "Sem vaga", de: 477780, por: 409000 },
-    { id: "1d-hmp", nome: "1 dormitório HMP", tipologia: "1 dormitório", faixa: "hmp", area: "27,99 m²", unidade: "524", vaga: "Sem vaga", de: 535640, por: 509000 },
+    { id: "studio-his", nome: "Studio", tipologia: "Studio", faixa: "his", area: "24,98 m²", unidade: "1004", vaga: "Sem vaga", de: 371600, por: 329000 },
+    { id: "1d-hmp", nome: "1 dormitório", tipologia: "1 dormitório", faixa: "hmp", area: "27,99 m²", unidade: "524", vaga: "Sem vaga", de: 535640, por: 509000 },
     { id: "2d", nome: "2 dormitórios", tipologia: "2 dormitórios", faixa: "livre", area: "51,31 m²", unidade: "1404", vaga: "1 vaga", de: 1067410, por: 995000 },
     { id: "3d", nome: "3 dormitórios", tipologia: "3 dormitórios", faixa: "livre", area: "68,69 m²", unidade: "602", vaga: "1 vaga", de: 1507200, por: 1260000 },
   ],
