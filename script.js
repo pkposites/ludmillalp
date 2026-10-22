@@ -15,10 +15,11 @@ const CONFIG = {
   leadEndpoint: "",
 
   // Ofertas de outubro. faixa: "his" (até 6 SM), "hmp" (até 10 SM) ou "livre".
+  // selo (opcional): texto de destaque no card, ex.: "Mais procurada".
   unidades: [
     { id: "studio-his", nome: "Studio", tipologia: "Studio", faixa: "his", area: "24,98 m²", unidade: "1004", vaga: "Sem vaga", de: 371600, por: 329000 },
     { id: "1d-hmp", nome: "1 dormitório", tipologia: "1 dormitório", faixa: "hmp", area: "27,99 m²", unidade: "524", vaga: "Sem vaga", de: 535640, por: 509000 },
-    { id: "2d", nome: "2 dormitórios", tipologia: "2 dormitórios", faixa: "livre", area: "51,31 m²", unidade: "1404", vaga: "1 vaga", de: 1067410, por: 995000 },
+    { id: "2d", nome: "2 dormitórios", tipologia: "2 dormitórios", faixa: "livre", area: "51,31 m²", unidade: "1404", vaga: "1 vaga", de: 1067410, por: 995000, selo: "Mais procurada" },
     { id: "3d", nome: "3 dormitórios", tipologia: "3 dormitórios", faixa: "livre", area: "68,69 m²", unidade: "602", vaga: "1 vaga", de: 1507200, por: 1260000 },
   ],
 };
@@ -52,10 +53,12 @@ const maxDesconto = Math.max(...CONFIG.unidades.map((u) => u.de - u.por));
 $("#offersGrid").innerHTML = CONFIG.unidades
   .map((u) => {
     const desconto = u.de - u.por;
-    const destaque = desconto === maxDesconto;
+    // Selo manual (campo "selo") tem prioridade sobre o selo automático de maior desconto
+    const selo = u.selo || (desconto === maxDesconto ? "Maior desconto" : "");
+    const destaque = !!selo;
     return `
       <article class="offer reveal${destaque ? " offer--featured" : ""}">
-        ${destaque ? '<span class="offer__ribbon">Maior desconto</span>' : ""}
+        ${selo ? `<span class="offer__ribbon${u.selo ? " offer__ribbon--gold" : ""}">${selo}</span>` : ""}
         <span class="offer__tag">${u.faixa === "livre" ? "Com vaga" : FAIXA_LABEL[u.faixa]}</span>
         <h3>${u.nome}</h3>
         <div class="offer__meta"><span>${u.area}</span><span>Unidade ${u.unidade}</span><span>${u.vaga}</span></div>
