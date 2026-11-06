@@ -105,6 +105,14 @@ function aplicarConsentimento(aceito) {
   } catch (e) {}
 }
 
+// Evento Lead do pixel: uma única vez por visita (quiz ou botões de WhatsApp)
+let leadDisparado = false;
+function dispararLead(origem) {
+  if (leadDisparado || typeof window.fbq !== "function") return;
+  leadDisparado = true;
+  window.fbq("track", "Lead", { content_name: origem });
+}
+
 // Registra o contato no Cadê o Lead e abre o WhatsApp pela URL dele
 function abrirWhatsApp(url, respostas) {
   window.LeadHub?.identify({ name: contato.nome, phone: contato.telefone });
@@ -161,6 +169,7 @@ function confirmarContato() {
   const { url, respostas } = leadPendente;
   fecharPassoContato();
   abrirWhatsApp(url, respostas);
+  dispararLead("WhatsApp Kaslik Ibirapuera");
 }
 $("#leadClose").addEventListener("click", fecharPassoContato);
 leadModal.addEventListener("click", (e) => e.target === leadModal && fecharPassoContato());
@@ -202,7 +211,7 @@ $("#offersGrid").innerHTML = CONFIG.unidades
           <div class="offer__to"><small>por</small><strong>${brl(u.por)}</strong></div>
           <span class="offer__save">Economia de ${brl(desconto)}</span>
         </div>
-        <a href="#" class="btn btn--dark" data-interesse="${u.nome} · unidade ${u.unidade}" data-whatsapp="Olá, Ludmilla! Tenho interesse no ${u.nome} (unidade ${u.unidade}) do ${CONFIG.empreendimento} por ${brl(u.por)}. Pode me enviar o fluxo de pagamento?">Quero esta unidade</a>
+        <a href="#" class="btn btn--dark" data-interesse="${u.nome} · unidade ${u.unidade}" data-whatsapp="Olá, Ludmilla! Gostaria de saber mais sobre o ${u.nome} (unidade ${u.unidade}) do ${CONFIG.empreendimento}, anunciado por ${brl(u.por)}.">Saber mais sobre esta unidade</a>
       </article>`;
   })
   .join("");
@@ -453,7 +462,6 @@ function explanation(u, objetivo) {
 let respostasQuiz = null;
 let quizWhatsUrl = "";
 let enviandoQuiz = false; // trava contra clique duplo / submit repetido
-let leadDisparado = false; // o evento Lead do pixel dispara uma única vez por visita
 
 // O quiz já pediu nome e WhatsApp: envia as respostas e abre o WhatsApp direto
 $("#resultWhatsapp").addEventListener("click", (e) => {
@@ -562,10 +570,7 @@ async function submitQuiz() {
 
   // Lead do pixel: uma única vez, só se o envio deu certo
   const leadEntregue = CONFIG.leadEndpoint ? envioOk : leadHubOk;
-  if (leadEntregue && !leadDisparado && typeof window.fbq === "function") {
-    leadDisparado = true;
-    window.fbq("track", "Lead", { content_name: "Quiz Kaslik Ibirapuera" });
-  }
+  if (leadEntregue) dispararLead("Quiz Kaslik Ibirapuera");
   if (leadEntregue && typeof window.gtag === "function") window.gtag("event", "generate_lead", { objetivo: a.objetivo, unidade: u.nome });
 
   enviandoQuiz = false;
