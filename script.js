@@ -14,7 +14,7 @@ const CONFIG = {
   // Deixe vazio para enviar apenas pelo WhatsApp.
   leadEndpoint: "",
 
-  // Ofertas de outubro. faixa: "his" (até 6 SM), "hmp" (até 10 SM) ou "livre".
+  // Ofertas especiais. faixa: "his" (até 6 SM), "hmp" (até 10 SM) ou "livre".
   // selo (opcional): texto de destaque no card, ex.: "Mais procurada".
   unidades: [
     { id: "studio-his", nome: "Studio", tipologia: "Studio", faixa: "his", area: "24,98 m²", unidade: "1004", vaga: "Sem vaga", de: 371600, por: 329000 },

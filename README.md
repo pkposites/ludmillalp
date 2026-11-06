@@ -5,7 +5,7 @@ Landing page estática (HTML + CSS + JS, sem build) com:
 - **Hero** com a Ludmilla e um destaque das ofertas do mês
 - **Sobre**: publicitária por formação, corretora por amor, +15 anos de mercado, tenista
 - **Kaslik Ibirapuera**: diferenciais, números, lazer e localização (Vila Mariana)
-- **Ofertas de outubro**: cards com preço "de/por" e economia, cada um com botão para o WhatsApp
+- **Ofertas especiais**: cards com preço "de/por" e economia, cada um com botão para o WhatsApp
 - **Quiz** (6 perguntas + contato) que recomenda a unidade ideal e abre o WhatsApp com as respostas
 - FAQ (inclui HIS/HMP), CTA final e botão flutuante de WhatsApp
 
