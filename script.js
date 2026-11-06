@@ -3,7 +3,7 @@
    ========================================================================== */
 const CONFIG = {
   // WhatsApp com DDI + DDD, só números. Ex.: 5511999998888
-  whatsapp: "5511000000000",
+  whatsapp: "5511972525752",
   instagram: "https://www.instagram.com/ludmillaimoveis/",
   // Ex.: "Corretora de Imóveis · CRECI 000000-F"
   creci: "Corretora de Imóveis · CRECI 000000-F",
