@@ -39,11 +39,88 @@ $$('[data-cfg="creci"]').forEach((el) => (el.textContent = CONFIG.creci));
 $$('[data-cfg="instagram"]').forEach((el) => (el.href = CONFIG.instagram));
 $("#year").textContent = new Date().getFullYear();
 
+/* ---------- Contato pelo WhatsApp (Cadê o Lead) ---------- */
+// Formata 11 dígitos como (11) 91234-5678
+const formatPhone = (d) => {
+  if (d.length > 6) return `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
+  if (d.length > 2) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  return d;
+};
+const onlyDigits = (v) => v.replace(/\D/g, "").slice(0, 11);
+const contato = { nome: "", telefone: "" }; // lembra o contato durante a visita
+
+// Registra o contato no Cadê o Lead e abre o WhatsApp pela URL dele
+function abrirWhatsApp(url, respostas) {
+  window.LeadHub?.identify({ name: contato.nome, phone: contato.telefone });
+  if (respostas) window.LeadHub?.set(respostas);
+  const destino = window.LeadHub ? window.LeadHub.whatsappUrl(url) : url;
+  const janela = window.open(destino, "_blank");
+  if (janela) janela.opener = null;
+  else window.location.href = destino;
+}
+
+const leadModal = $("#leadModal");
+const leadForm = $("#leadForm");
+const leadNome = $("#leadNome");
+const leadWhats = $("#leadWhats");
+const leadError = $("#leadError");
+let leadPendente = null;
+let leadFoco = null;
+
+function abrirPassoContato(url, respostas) {
+  leadPendente = { url, respostas };
+  leadNome.value = contato.nome;
+  leadWhats.value = formatPhone(contato.telefone);
+  leadError.textContent = "";
+  [leadNome, leadWhats].forEach((el) => el.classList.remove("is-invalid"));
+  leadFoco = document.activeElement;
+  leadModal.hidden = false;
+  document.body.style.overflow = "hidden";
+  (contato.nome ? leadWhats : leadNome).focus();
+}
+function fecharPassoContato() {
+  leadModal.hidden = true;
+  document.body.style.overflow = "";
+  if (leadFoco) leadFoco.focus();
+}
+leadWhats.addEventListener("input", () => (leadWhats.value = formatPhone(onlyDigits(leadWhats.value))));
+leadForm.addEventListener("input", () => {
+  leadError.textContent = "";
+  [leadNome, leadWhats].forEach((el) => el.classList.remove("is-invalid"));
+});
+leadForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const nome = leadNome.value.trim();
+  const tel = onlyDigits(leadWhats.value);
+  if (nome.length < 2 || tel.length < 10) {
+    if (nome.length < 2) leadNome.classList.add("is-invalid");
+    if (tel.length < 10) leadWhats.classList.add("is-invalid");
+    leadError.textContent = "Preencha seu nome e WhatsApp com DDD.";
+    return;
+  }
+  contato.nome = nome;
+  contato.telefone = tel;
+  const { url, respostas } = leadPendente;
+  fecharPassoContato();
+  abrirWhatsApp(url, respostas);
+});
+$("#leadClose").addEventListener("click", fecharPassoContato);
+leadModal.addEventListener("click", (e) => e.target === leadModal && fecharPassoContato());
+document.addEventListener("keydown", (e) => e.key === "Escape" && !leadModal.hidden && fecharPassoContato());
+
+// Todo botão com data-whatsapp passa pelo passo de contato antes de abrir o WhatsApp
 function bindWhatsappLinks(root = document) {
   $$("[data-whatsapp]", root).forEach((el) => {
-    el.href = whatsappUrl(el.dataset.whatsapp);
+    el.href = whatsappUrl(el.dataset.whatsapp); // funciona mesmo sem JavaScript
     el.target = "_blank";
     el.rel = "noopener";
+    if (el.dataset.leadBound) return;
+    el.dataset.leadBound = "1";
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const respostas = el.dataset.interesse ? { Interesse: el.dataset.interesse } : null;
+      abrirPassoContato(whatsappUrl(el.dataset.whatsapp), respostas);
+    });
   });
 }
 
@@ -66,7 +143,7 @@ $("#offersGrid").innerHTML = CONFIG.unidades
           <div class="offer__to"><small>por</small><strong>${brl(u.por)}</strong></div>
           <span class="offer__save">Economia de ${brl(desconto)}</span>
         </div>
-        <a href="#" class="btn btn--dark" data-whatsapp="Olá, Ludmilla! Tenho interesse no ${u.nome} (unidade ${u.unidade}) do ${CONFIG.empreendimento} por ${brl(u.por)}. Pode me enviar o fluxo de pagamento?">Quero esta unidade</a>
+        <a href="#" class="btn btn--dark" data-interesse="${u.nome} · unidade ${u.unidade}" data-whatsapp="Olá, Ludmilla! Tenho interesse no ${u.nome} (unidade ${u.unidade}) do ${CONFIG.empreendimento} por ${brl(u.por)}. Pode me enviar o fluxo de pagamento?">Quero esta unidade</a>
       </article>`;
   })
   .join("");
@@ -196,12 +273,11 @@ const counter = $("#quizCounter");
 const errorEl = $("#formError");
 const nomeInput = $("#nome");
 const whatsInput = $("#whatsapp");
-const consentInput = $("#consent");
 let current = 0;
 
 const checked = (name) => $(`input[name="${name}"]:checked`, form);
-const phoneDigits = () => whatsInput.value.replace(/\D/g, "").slice(0, 11);
-const contactValid = () => nomeInput.value.trim().length >= 2 && phoneDigits().length >= 10 && consentInput.checked;
+const phoneDigits = () => onlyDigits(whatsInput.value);
+const contactValid = () => nomeInput.value.trim().length >= 2 && phoneDigits().length >= 10;
 const stepIsValid = (i) => (i === CONTACT ? contactValid() : !!$("input[type=radio]:checked", steps[i]));
 
 function render() {
@@ -211,6 +287,7 @@ function render() {
   btnBack.hidden = current === 0;
   btnNext.textContent = current === CONTACT ? "Ver minha recomendação" : "Continuar";
   btnNext.disabled = !stepIsValid(current);
+  $("#quizLegal").hidden = current !== CONTACT;
   errorEl.textContent = "";
 }
 
@@ -244,14 +321,8 @@ form.addEventListener("submit", (e) => {
   if (current === CONTACT) submitQuiz();
 });
 
-// Máscara (11) 90000-0000
-whatsInput.addEventListener("input", () => {
-  const d = phoneDigits();
-  let out = d;
-  if (d.length > 2) out = `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length > 6) out = `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
-  whatsInput.value = out;
-});
+// Máscara (11) 91234-5678
+whatsInput.addEventListener("input", () => (whatsInput.value = formatPhone(phoneDigits())));
 
 /* Escolhe a unidade mais adequada às respostas */
 function recommend({ objetivo, tipologia, budget, faixa }) {
@@ -310,15 +381,21 @@ function explanation(u, objetivo) {
   return textos[u.tipologia];
 }
 
+let respostasQuiz = null;
+let quizWhatsUrl = "";
+
+// O quiz já pediu nome e WhatsApp: envia as respostas e abre o WhatsApp direto
+$("#resultWhatsapp").addEventListener("click", (e) => {
+  e.preventDefault();
+  abrirWhatsApp(quizWhatsUrl, respostasQuiz);
+});
+
 async function submitQuiz() {
   const nome = nomeInput.value.trim();
   if (!contactValid()) {
     if (nome.length < 2) nomeInput.classList.add("is-invalid");
     if (phoneDigits().length < 10) whatsInput.classList.add("is-invalid");
-    errorEl.textContent =
-      nome.length >= 2 && phoneDigits().length >= 10
-        ? "Marque a autorização de contato para continuar."
-        : "Confira seu nome e WhatsApp, por favor.";
+    errorEl.textContent = "Confira seu nome e WhatsApp com DDD, por favor.";
     return;
   }
 
@@ -365,6 +442,19 @@ async function submitQuiz() {
   if (typeof window.fbq === "function") window.fbq("track", "Lead");
   if (typeof window.gtag === "function") window.gtag("event", "generate_lead", { objetivo: a.objetivo, unidade: u.nome });
 
+  contato.nome = nome;
+  contato.telefone = phoneDigits();
+  window.LeadHub?.identify({ name: contato.nome, phone: contato.telefone });
+  respostasQuiz = {
+    Objetivo: a.objetivo,
+    "Tipo de unidade": a.tipologia,
+    Investimento: a.investimento,
+    "Renda familiar": a.renda,
+    Pagamento: a.pagamento,
+    Prazo: a.prazo,
+    "Unidade sugerida": `${u.nome} · unidade ${u.unidade}`,
+  };
+
   const primeiroNome = nome.split(/\s+/)[0];
   $("#resultTitle").textContent = `${primeiroNome}, separei uma ótima opção para você!`;
   $("#resultText").textContent = explanation(u, a.objetivo);
@@ -390,7 +480,8 @@ async function submitQuiz() {
     "",
     `A sugestão foi o ${u.nome} (unidade ${u.unidade}) por ${brl(u.por)}. Pode me enviar o fluxo de pagamento?`,
   ].join("\n");
-  $("#resultWhatsapp").href = whatsappUrl(msg);
+  quizWhatsUrl = whatsappUrl(msg);
+  $("#resultWhatsapp").href = quizWhatsUrl;
 
   form.hidden = true;
   $(".quiz__progress").style.visibility = "hidden";

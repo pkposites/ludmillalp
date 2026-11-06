@@ -474,6 +474,17 @@ em { font-style: italic; color: var(--gold-400); }
   .dev-actions .btn { flex: 1 1 100%; }
 }
 
+/* ---------- Passo de contato (antes do WhatsApp) ---------- */
+.lead-modal { position: fixed; inset: 0; z-index: 110; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(15, 12, 10, .72); backdrop-filter: blur(4px); }
+.lead-modal__box { position: relative; width: min(440px, 100%); max-height: calc(100vh - 40px); overflow: auto; background: var(--white); color: var(--ink); border-radius: 22px; padding: 32px 28px 24px; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .6); animation: fadeUp .35s var(--ease); }
+.lead-modal__box h3 { font-size: 1.8rem; color: var(--dark-800); margin: 0 32px .3em 0; }
+.lead-modal__text { color: var(--muted); font-size: .95rem; }
+.lead-modal__close { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--cream); color: var(--ink); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.lead-modal__close:hover { background: var(--gold-100); }
+.lead-modal__submit { width: 100%; margin-top: 4px; }
+.lead-legal { font-size: .78rem; line-height: 1.5; color: var(--muted); text-align: center; margin: 12px 0 0; }
+.lead-legal a { color: inherit; font-weight: 600; }
+
 /* ---------- Image fallback (enquanto as fotos não são enviadas) ---------- */
 .img-fallback {
   width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;

@@ -3,6 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Meta Pixel (só rastreia depois do aceite de cookies, liberado pelo Cadê o Lead) -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('consent', 'revoke');
+    fbq('init', '1639301224606148');
+    fbq('track', 'PageView');
+  </script>
+  <!-- Fim Meta Pixel -->
+  <script src="https://cadeolead.com.br/tracker.js" data-key="pk_c3a0776c3d574524b7e02cf0af6deac5" data-consent="banner" async></script>
   <title>Ludmilla | Corretora de Imóveis · Kaslik Ibirapuera</title>
   <meta name="description" content="Ludmilla, corretora de imóveis há mais de 15 anos. Oportunidades de outubro no Kaslik Ibirapuera, com descontos de até R$ 247.200. Studios, 1, 2 e 3 dormitórios na Vila Mariana.">
   <meta name="theme-color" content="#241e1a">
@@ -392,12 +406,8 @@
               </div>
               <div class="field">
                 <label for="whatsapp">WhatsApp</label>
-                <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" inputmode="tel" placeholder="(11) 90000-0000" required>
+                <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
               </div>
-              <label class="consent">
-                <input type="checkbox" id="consent" required>
-                <span>Autorizo a Ludmilla a entrar em contato comigo sobre este e outros empreendimentos.</span>
-              </label>
               <p class="field__error" id="formError" role="alert"></p>
             </fieldset>
 
@@ -405,6 +415,7 @@
               <button type="button" class="btn btn--link" id="quizBack" hidden>← Voltar</button>
               <button type="button" class="btn btn--gold" id="quizNext" disabled>Continuar</button>
             </div>
+            <p class="lead-legal" id="quizLegal" hidden>Ao continuar, você concorda em ser contatado pelo WhatsApp. Veja a <a href="https://cadeolead.com.br/privacidade/pk_c3a0776c3d574524b7e02cf0af6deac5" target="_blank" rel="noopener">Política de privacidade</a>.</p>
           </form>
 
           <div class="quiz__result" id="quizResult" hidden>
@@ -417,6 +428,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
               Receber minha simulação no WhatsApp
             </a>
+            <p class="lead-legal">Ao continuar, você concorda em ser contatado pelo WhatsApp. Veja a <a href="https://cadeolead.com.br/privacidade/pk_c3a0776c3d574524b7e02cf0af6deac5" target="_blank" rel="noopener">Política de privacidade</a>.</p>
             <button type="button" class="btn btn--link" id="quizRestart">Refazer o quiz</button>
           </div>
         </div>
@@ -474,6 +486,7 @@
       <div class="footer__links">
         <a href="#" data-whatsapp="Olá, Ludmilla! Gostaria de mais informações.">WhatsApp</a>
         <a href="#" target="_blank" rel="noopener" data-cfg="instagram">Instagram</a>
+        <a href="https://cadeolead.com.br/privacidade/pk_c3a0776c3d574524b7e02cf0af6deac5" target="_blank" rel="noopener">Política de privacidade</a>
       </div>
     </div>
     <div class="container footer__legal">
@@ -485,6 +498,31 @@
   <a href="#" class="whatsapp-float" data-whatsapp="Olá, Ludmilla! Vi a página do Kaslik Ibirapuera e gostaria de mais informações." aria-label="Falar no WhatsApp">
     <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
   </a>
+
+  <!-- Passo de contato antes de abrir o WhatsApp -->
+  <div class="lead-modal" id="leadModal" hidden role="dialog" aria-modal="true" aria-labelledby="leadTitle">
+    <div class="lead-modal__box">
+      <button class="lead-modal__close" id="leadClose" type="button" aria-label="Fechar">×</button>
+      <h3 id="leadTitle">Fale com a Ludmilla no WhatsApp</h3>
+      <p class="lead-modal__text">Me conta seu nome e WhatsApp para eu te atender.</p>
+      <form id="leadForm" novalidate>
+        <div class="field">
+          <label for="leadNome">Seu nome</label>
+          <input type="text" id="leadNome" autocomplete="name" placeholder="Como posso te chamar?" required>
+        </div>
+        <div class="field">
+          <label for="leadWhats">WhatsApp com DDD</label>
+          <input type="tel" id="leadWhats" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
+        </div>
+        <p class="field__error" id="leadError" role="alert"></p>
+        <button type="submit" class="btn btn--whatsapp lead-modal__submit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+          Abrir WhatsApp
+        </button>
+        <p class="lead-legal">Ao continuar, você concorda em ser contatado pelo WhatsApp. Veja a <a href="https://cadeolead.com.br/privacidade/pk_c3a0776c3d574524b7e02cf0af6deac5" target="_blank" rel="noopener">Política de privacidade</a>.</p>
+      </form>
+    </div>
+  </div>
 
   <!-- Lightbox da galeria -->
   <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Galeria de imagens">
