@@ -146,8 +146,7 @@ leadForm.addEventListener("input", () => {
   leadError.textContent = "";
   [leadNome, leadWhats].forEach((el) => el.classList.remove("is-invalid"));
 });
-leadForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+function confirmarContato() {
   const nome = leadNome.value.trim();
   const tel = onlyDigits(leadWhats.value);
   if (nome.length < 2 || tel.length < 10) {
@@ -162,7 +161,7 @@ leadForm.addEventListener("submit", (e) => {
   const { url, respostas } = leadPendente;
   fecharPassoContato();
   abrirWhatsApp(url, respostas);
-});
+}
 $("#leadClose").addEventListener("click", fecharPassoContato);
 leadModal.addEventListener("click", (e) => e.target === leadModal && fecharPassoContato());
 document.addEventListener("keydown", (e) => e.key === "Escape" && !leadModal.hidden && fecharPassoContato());
@@ -170,9 +169,10 @@ document.addEventListener("keydown", (e) => e.key === "Escape" && !leadModal.hid
 // Todo botão com data-whatsapp passa pelo passo de contato antes de abrir o WhatsApp
 function bindWhatsappLinks(root = document) {
   $$("[data-whatsapp]", root).forEach((el) => {
-    el.href = whatsappUrl(el.dataset.whatsapp); // funciona mesmo sem JavaScript
-    el.target = "_blank";
-    el.rel = "noopener";
+    // Sem wa.me no href: o Cadê o Lead registra como lead qualquer clique em link wa.me,
+    // e o lead só deve nascer depois do passo de nome e telefone.
+    el.href = "#";
+    el.removeAttribute("target");
     if (el.dataset.leadBound) return;
     el.dataset.leadBound = "1";
     el.addEventListener("click", (e) => {
@@ -375,10 +375,20 @@ form.addEventListener("input", () => {
 
 btnBack.addEventListener("click", () => goTo(current - 1));
 btnNext.addEventListener("click", () => (current < CONTACT ? goTo(current + 1) : submitQuiz()));
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (current === CONTACT) submitQuiz();
-});
+// Envio nativo dos nossos formulários (Enter ou botão de envio). Tratado na fase de captura
+// da janela, antes do Cadê o Lead: senão ele registra o envio como um lead a mais, além do
+// lead que nasce ao abrir o WhatsApp.
+window.addEventListener(
+  "submit",
+  (e) => {
+    if (e.target !== form && e.target !== leadForm) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.target === leadForm) confirmarContato();
+    else if (current === CONTACT) submitQuiz();
+  },
+  true
+);
 
 // Máscara (11) 91234-5678
 whatsInput.addEventListener("input", () => (whatsInput.value = formatPhone(phoneDigits())));
@@ -587,7 +597,6 @@ async function submitQuiz() {
     `A sugestão foi o ${u.nome} (unidade ${u.unidade}) por ${brl(u.por)}. Pode me enviar o fluxo de pagamento?`,
   ].join("\n");
   quizWhatsUrl = whatsappUrl(msg);
-  $("#resultWhatsapp").href = quizWhatsUrl;
 
   form.hidden = true;
   $(".quiz__progress").style.visibility = "hidden";
