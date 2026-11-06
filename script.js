@@ -34,6 +34,51 @@ const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 const brl = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 const whatsappUrl = (text) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`;
 
+/* ---------- Origem do anúncio (UTMs) ---------- */
+// Só guarda no aparelho e só envia a origem depois do aceite de cookies (LGPD).
+// O Cadê o Lead grava a escolha em localStorage "lh_consent".
+const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+const ORIGEM_STORAGE = "kaslik_origem";
+const temConsentimento = () => {
+  if (typeof window.lhConsent === "boolean") return window.lhConsent; // escolha feita nesta visita
+  try {
+    return window.localStorage.getItem("lh_consent") === "granted";
+  } catch (e) {
+    return false;
+  }
+};
+const origemDaUrl = (() => {
+  const q = new URLSearchParams(window.location.search);
+  const o = {};
+  UTM_KEYS.forEach((k) => {
+    const v = q.get(k);
+    if (v) o[k] = v;
+  });
+  return o;
+})();
+const referrerDaVisita = document.referrer;
+
+// Guarda as UTMs da URL na sessão; sem UTMs na URL, mantém as que já estavam guardadas
+function guardarOrigem() {
+  if (!temConsentimento() || !Object.keys(origemDaUrl).length) return;
+  try {
+    window.sessionStorage.setItem(ORIGEM_STORAGE, JSON.stringify({ ...origemDaUrl, referrer: referrerDaVisita }));
+  } catch (e) {}
+}
+function lerOrigem() {
+  if (!temConsentimento()) return null;
+  guardarOrigem();
+  let salva = {};
+  try {
+    salva = JSON.parse(window.sessionStorage.getItem(ORIGEM_STORAGE) || "{}");
+  } catch (e) {}
+  const o = {};
+  UTM_KEYS.forEach((k) => (o[k] = origemDaUrl[k] || salva[k] || ""));
+  o.referrer = salva.referrer || referrerDaVisita || "";
+  return o;
+}
+guardarOrigem();
+
 /* ---------- Dados dinâmicos ---------- */
 $$('[data-cfg="creci"]').forEach((el) => (el.textContent = CONFIG.creci));
 $$('[data-cfg="instagram"]').forEach((el) => (el.href = CONFIG.instagram));
@@ -47,7 +92,18 @@ const formatPhone = (d) => {
   return d;
 };
 const onlyDigits = (v) => v.replace(/\D/g, "").slice(0, 11);
-const contato = { nome: "", telefone: "" }; // lembra o contato durante a visita
+const contato = { nome: "", telefone: "", aceite: false }; // lembra o contato durante a visita
+
+// Aceite de compartilhar os dados da visita, dado no momento de falar com a Ludmilla.
+// Libera o Cadê o Lead e o pixel (data-consent="required"). Se o script ainda não
+// carregou, window.lhConsent é lido por ele ao iniciar.
+function aplicarConsentimento(aceito) {
+  contato.aceite = aceito;
+  window.lhConsent = aceito;
+  try {
+    window.LeadHub?.consent?.(aceito);
+  } catch (e) {}
+}
 
 // Registra o contato no Cadê o Lead e abre o WhatsApp pela URL dele
 function abrirWhatsApp(url, respostas) {
@@ -64,6 +120,7 @@ const leadForm = $("#leadForm");
 const leadNome = $("#leadNome");
 const leadWhats = $("#leadWhats");
 const leadError = $("#leadError");
+const leadAceite = $("#leadAceite");
 let leadPendente = null;
 let leadFoco = null;
 
@@ -71,6 +128,7 @@ function abrirPassoContato(url, respostas) {
   leadPendente = { url, respostas };
   leadNome.value = contato.nome;
   leadWhats.value = formatPhone(contato.telefone);
+  leadAceite.checked = contato.aceite;
   leadError.textContent = "";
   [leadNome, leadWhats].forEach((el) => el.classList.remove("is-invalid"));
   leadFoco = document.activeElement;
@@ -100,6 +158,7 @@ leadForm.addEventListener("submit", (e) => {
   }
   contato.nome = nome;
   contato.telefone = tel;
+  aplicarConsentimento(leadAceite.checked);
   const { url, respostas } = leadPendente;
   fecharPassoContato();
   abrirWhatsApp(url, respostas);
@@ -383,6 +442,8 @@ function explanation(u, objetivo) {
 
 let respostasQuiz = null;
 let quizWhatsUrl = "";
+let enviandoQuiz = false; // trava contra clique duplo / submit repetido
+let leadDisparado = false; // o evento Lead do pixel dispara uma única vez por visita
 
 // O quiz já pediu nome e WhatsApp: envia as respostas e abre o WhatsApp direto
 $("#resultWhatsapp").addEventListener("click", (e) => {
@@ -391,6 +452,7 @@ $("#resultWhatsapp").addEventListener("click", (e) => {
 });
 
 async function submitQuiz() {
+  if (enviandoQuiz) return;
   const nome = nomeInput.value.trim();
   if (!contactValid()) {
     if (nome.length < 2) nomeInput.classList.add("is-invalid");
@@ -414,37 +476,31 @@ async function submitQuiz() {
     faixa: checked("renda").dataset.faixa,
   });
 
+  enviandoQuiz = true;
+  btnNext.disabled = true;
+  btnNext.textContent = "Enviando...";
+
+  aplicarConsentimento($("#quizAceite").checked);
+  const origem = lerOrigem(); // null sem aceite
+  const dataHora = new Date().toISOString();
   const lead = {
     nome,
     whatsapp: phoneDigits(),
     ...a,
     recomendacao: `${u.nome} · unidade ${u.unidade} · ${brl(u.por)}`,
     empreendimento: CONFIG.empreendimento,
-    origem: window.location.href,
-    data: new Date().toISOString(),
+    pagina: window.location.origin + window.location.pathname,
+    utm_source: origem ? origem.utm_source : "",
+    utm_medium: origem ? origem.utm_medium : "",
+    utm_campaign: origem ? origem.utm_campaign : "",
+    utm_content: origem ? origem.utm_content : "",
+    utm_term: origem ? origem.utm_term : "",
+    url_origem: origem ? origem.referrer : "",
+    data: dataHora,
   };
-
-  if (CONFIG.leadEndpoint) {
-    btnNext.disabled = true;
-    btnNext.textContent = "Enviando...";
-    try {
-      await fetch(CONFIG.leadEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(lead),
-      });
-    } catch (err) {
-      console.warn("Não foi possível enviar o lead:", err);
-    }
-  }
-
-  // Eventos de conversão, se Meta Pixel / GA4 estiverem instalados
-  if (typeof window.fbq === "function") window.fbq("track", "Lead");
-  if (typeof window.gtag === "function") window.gtag("event", "generate_lead", { objetivo: a.objetivo, unidade: u.nome });
 
   contato.nome = nome;
   contato.telefone = phoneDigits();
-  window.LeadHub?.identify({ name: contato.nome, phone: contato.telefone });
   respostasQuiz = {
     Objetivo: a.objetivo,
     "Tipo de unidade": a.tipologia,
@@ -453,7 +509,57 @@ async function submitQuiz() {
     Pagamento: a.pagamento,
     Prazo: a.prazo,
     "Unidade sugerida": `${u.nome} · unidade ${u.unidade}`,
+    "Data/hora": dataHora,
   };
+  if (origem) {
+    Object.assign(respostasQuiz, {
+      "UTM Source": origem.utm_source,
+      "UTM Medium": origem.utm_medium,
+      "UTM Campaign": origem.utm_campaign,
+      "UTM Content": origem.utm_content,
+      "UTM Term": origem.utm_term,
+      "URL de origem": origem.referrer,
+    });
+  }
+
+  // Destino 1 (opcional): webhook/planilha própria. Só conta como enviado com resposta OK.
+  let envioOk = true;
+  if (CONFIG.leadEndpoint) {
+    try {
+      const res = await fetch(CONFIG.leadEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(lead),
+      });
+      envioOk = res.ok;
+    } catch (err) {
+      envioOk = false;
+    }
+    if (!envioOk) console.warn("Não foi possível enviar o lead ao leadEndpoint.");
+  }
+
+  // Destino 2: Cadê o Lead (contato + respostas). Antes do Lead do pixel, para a linha já levar o telefone.
+  let leadHubOk = false;
+  try {
+    if (window.LeadHub) {
+      window.LeadHub.identify({ name: contato.nome, phone: contato.telefone });
+      window.LeadHub.set(respostasQuiz);
+      leadHubOk = true;
+    }
+  } catch (err) {
+    console.warn("Não foi possível entregar o lead ao Cadê o Lead:", err);
+  }
+
+  // Lead do pixel: uma única vez, só se o envio deu certo
+  const leadEntregue = CONFIG.leadEndpoint ? envioOk : leadHubOk;
+  if (leadEntregue && !leadDisparado && typeof window.fbq === "function") {
+    leadDisparado = true;
+    window.fbq("track", "Lead", { content_name: "Quiz Kaslik Ibirapuera" });
+  }
+  if (leadEntregue && typeof window.gtag === "function") window.gtag("event", "generate_lead", { objetivo: a.objetivo, unidade: u.nome });
+
+  enviandoQuiz = false;
+  btnNext.textContent = "Ver minha recomendação";
 
   const primeiroNome = nome.split(/\s+/)[0];
   $("#resultTitle").textContent = `${primeiroNome}, separei uma ótima opção para você!`;

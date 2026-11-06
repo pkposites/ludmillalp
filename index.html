@@ -16,7 +16,7 @@
     fbq('track', 'PageView');
   </script>
   <!-- Fim Meta Pixel -->
-  <script src="https://cadeolead.com.br/tracker.js" data-key="pk_c3a0776c3d574524b7e02cf0af6deac5" data-consent="banner" async></script>
+  <script src="https://cadeolead.com.br/tracker.js" data-key="pk_c3a0776c3d574524b7e02cf0af6deac5" data-consent="required" async></script>
   <title>Ludmilla | Corretora de Imóveis · Kaslik Ibirapuera</title>
   <meta name="description" content="Ludmilla, corretora de imóveis há mais de 15 anos. Oportunidades de outubro no Kaslik Ibirapuera, com descontos de até R$ 247.200. Studios, 1, 2 e 3 dormitórios na Vila Mariana.">
   <meta name="theme-color" content="#241e1a">
@@ -408,6 +408,10 @@
                 <label for="whatsapp">WhatsApp</label>
                 <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
               </div>
+              <label class="consent">
+                <input type="checkbox" id="quizAceite">
+                <span>Aceito compartilhar com a Ludmilla os dados da minha visita (origem do anúncio e cookies) para medir e melhorar os anúncios.</span>
+              </label>
               <p class="field__error" id="formError" role="alert"></p>
             </fieldset>
 
@@ -514,6 +518,10 @@
           <label for="leadWhats">WhatsApp com DDD</label>
           <input type="tel" id="leadWhats" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
         </div>
+        <label class="consent">
+          <input type="checkbox" id="leadAceite">
+          <span>Aceito compartilhar com a Ludmilla os dados da minha visita (origem do anúncio e cookies) para medir e melhorar os anúncios.</span>
+        </label>
         <p class="field__error" id="leadError" role="alert"></p>
         <button type="submit" class="btn btn--whatsapp lead-modal__submit">
           <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
