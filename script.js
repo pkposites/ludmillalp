@@ -114,13 +114,21 @@ function dispararLead(origem) {
 }
 
 // Registra o contato no Cadê o Lead e abre o WhatsApp pela URL dele
-function abrirWhatsApp(url, respostas) {
+// Encaminhamento para o WhatsApp = conversão: registra no Cadê o Lead, dispara o Lead
+// do pixel e abre o WhatsApp numa aba nova (a página continua aberta na aba atual).
+function abrirWhatsApp(url, respostas, origemLead) {
   window.LeadHub?.identify({ name: contato.nome, phone: contato.telefone });
   if (respostas) window.LeadHub?.set(respostas);
   const destino = window.LeadHub ? window.LeadHub.whatsappUrl(url) : url;
-  const janela = window.open(destino, "_blank");
-  if (janela) janela.opener = null;
-  else window.location.href = destino;
+  dispararLead(origemLead);
+  const link = document.createElement("a");
+  link.href = destino;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.hidden = true;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
 const leadModal = $("#leadModal");
@@ -168,8 +176,7 @@ function confirmarContato() {
   aplicarConsentimento(leadAceite.checked);
   const { url, respostas } = leadPendente;
   fecharPassoContato();
-  abrirWhatsApp(url, respostas);
-  dispararLead("WhatsApp Kaslik Ibirapuera");
+  abrirWhatsApp(url, respostas, "WhatsApp Kaslik Ibirapuera");
 }
 $("#leadClose").addEventListener("click", fecharPassoContato);
 leadModal.addEventListener("click", (e) => e.target === leadModal && fecharPassoContato());
@@ -466,7 +473,7 @@ let enviandoQuiz = false; // trava contra clique duplo / submit repetido
 // O quiz já pediu nome e WhatsApp: envia as respostas e abre o WhatsApp direto
 $("#resultWhatsapp").addEventListener("click", (e) => {
   e.preventDefault();
-  abrirWhatsApp(quizWhatsUrl, respostasQuiz);
+  abrirWhatsApp(quizWhatsUrl, respostasQuiz, "Quiz Kaslik Ibirapuera");
 });
 
 async function submitQuiz() {
@@ -570,7 +577,6 @@ async function submitQuiz() {
 
   // Lead do pixel: uma única vez, só se o envio deu certo
   const leadEntregue = CONFIG.leadEndpoint ? envioOk : leadHubOk;
-  if (leadEntregue) dispararLead("Quiz Kaslik Ibirapuera");
   if (leadEntregue && typeof window.gtag === "function") window.gtag("event", "generate_lead", { objetivo: a.objetivo, unidade: u.nome });
 
   enviandoQuiz = false;
