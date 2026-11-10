@@ -79,6 +79,20 @@ function lerOrigem() {
 }
 guardarOrigem();
 
+/* ---------- Microsoft Clarity: marcos da jornada ---------- */
+// Eventos e etiquetas para filtrar gravações e mapas de calor. Nunca envia nome ou telefone.
+const clarityEvento = (nome) => {
+  try {
+    window.clarity?.("event", nome);
+  } catch (e) {}
+};
+const clarityTag = (chave, valor) => {
+  try {
+    if (valor) window.clarity?.("set", chave, String(valor));
+  } catch (e) {}
+};
+UTM_KEYS.forEach((k) => clarityTag(k, origemDaUrl[k]));
+
 /* ---------- Dados dinâmicos ---------- */
 $$('[data-cfg="creci"]').forEach((el) => (el.textContent = CONFIG.creci));
 $$('[data-cfg="instagram"]').forEach((el) => (el.href = CONFIG.instagram));
@@ -121,6 +135,11 @@ function abrirWhatsApp(url, respostas, origemLead) {
   if (respostas) window.LeadHub?.set(respostas);
   const destino = window.LeadHub ? window.LeadHub.whatsappUrl(url) : url;
   dispararLead(origemLead);
+  clarityEvento("whatsapp_encaminhado");
+  clarityTag("conversao", origemLead);
+  try {
+    window.clarity?.("upgrade", "whatsapp_encaminhado"); // garante a gravação completa desta sessão
+  } catch (e) {}
   const link = document.createElement("a");
   link.href = destino;
   link.target = "_blank";
@@ -141,6 +160,7 @@ let leadPendente = null;
 let leadFoco = null;
 
 function abrirPassoContato(url, respostas) {
+  clarityEvento("contato_aberto");
   leadPendente = { url, respostas };
   leadNome.value = contato.nome;
   leadWhats.value = formatPhone(contato.telefone);
@@ -369,6 +389,7 @@ function render() {
 function goTo(i) {
   current = Math.max(0, Math.min(CONTACT, i));
   render();
+  clarityEvento(current === CONTACT ? "quiz_contato" : `quiz_etapa_${current + 1}`);
   if (current === CONTACT) nomeInput.focus({ preventScroll: true });
 }
 
@@ -613,6 +634,8 @@ async function submitQuiz() {
   $(".quiz__progress").style.visibility = "hidden";
   counter.hidden = true;
   $("#quizResult").hidden = false;
+  clarityEvento("quiz_concluido");
+  clarityTag("unidade_sugerida", u.nome);
   $("#quizCard").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 

@@ -16,6 +16,15 @@
   </script>
   <!-- Fim Meta Pixel -->
   <script src="https://cadeolead.com.br/tracker.js" data-key="pk_c3a0776c3d574524b7e02cf0af6deac5" data-consent="required" async></script>
+
+  <!-- Microsoft Clarity (gravações de sessão e mapas de calor) -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "zbj8qjwj53");
+  </script>
   <title>Ludmilla | Corretora de Imóveis · Kaslik Ibirapuera</title>
   <meta name="description" content="Ludmilla, corretora de imóveis há mais de 15 anos. Oportunidades especiais no Kaslik Ibirapuera, com descontos de até R$ 247.200. Studios, 1, 2 e 3 dormitórios na Vila Mariana.">
   <meta name="theme-color" content="#241e1a">
@@ -401,11 +410,11 @@
               <legend>Quase lá! Para onde envio sua recomendação?</legend>
               <div class="field">
                 <label for="nome">Seu nome</label>
-                <input type="text" id="nome" name="nome" autocomplete="name" placeholder="Como posso te chamar?" required>
+                <input type="text" id="nome" name="nome" data-clarity-mask="true" autocomplete="name" placeholder="Como posso te chamar?" required>
               </div>
               <div class="field">
                 <label for="whatsapp">WhatsApp</label>
-                <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
+                <input type="tel" id="whatsapp" name="whatsapp" data-clarity-mask="true" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
               </div>
               <label class="consent">
                 <input type="checkbox" id="quizAceite">
@@ -511,11 +520,11 @@
       <form id="leadForm" novalidate>
         <div class="field">
           <label for="leadNome">Seu nome</label>
-          <input type="text" id="leadNome" autocomplete="name" placeholder="Como posso te chamar?" required>
+          <input type="text" id="leadNome" data-clarity-mask="true" autocomplete="name" placeholder="Como posso te chamar?" required>
         </div>
         <div class="field">
           <label for="leadWhats">WhatsApp com DDD</label>
-          <input type="tel" id="leadWhats" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
+          <input type="tel" id="leadWhats" data-clarity-mask="true" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
         </div>
         <label class="consent">
           <input type="checkbox" id="leadAceite">
