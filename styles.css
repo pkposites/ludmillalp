@@ -266,6 +266,33 @@ em { font-style: italic; color: var(--gold-400); }
 }
 .checklist--light li { color: var(--on-dark); }
 
+/* Cards de tipologia (sem preço) */
+.offer__diff { color: var(--muted); font-size: .95rem; margin: 0 0 18px; }
+.offer__from-price { margin: 0 0 18px; color: var(--muted); font-size: .9rem; }
+.offer__from-price strong { font: 700 1.5rem/1 var(--font-serif); color: var(--dark-800); font-variant-numeric: lining-nums; }
+.offer .offer__cta { margin-top: auto; min-height: 48px; padding: 14px 20px; white-space: normal; line-height: 1.3; text-align: center; }
+
+/* Bloco de valor abaixo das tipologias */
+.value { margin-top: 40px; padding: clamp(24px, 4vw, 40px); border-radius: var(--radius); background: var(--white); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+.value h3 { margin-bottom: 22px; color: var(--dark-800); }
+.value__grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 32px; }
+.value__grid li { display: flex; gap: 14px; align-items: flex-start; }
+.value__grid li div { display: flex; flex-direction: column; line-height: 1.45; }
+.value__grid strong { color: var(--dark-800); }
+.value__grid span:not(.value__icon) { color: var(--muted); font-size: .95rem; }
+.value__icon { flex: none; width: 42px; height: 42px; border-radius: 50%; background: var(--gold-100); display: grid; place-items: center; }
+.value__icon svg { width: 20px; height: 20px; fill: none; stroke: var(--dark-600); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.value__proof { margin: 24px 0 0; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); }
+.value__proof strong { color: var(--ink); }
+
+/* Botão flutuante sai de cena sobre os cards */
+.whatsapp-float { transition: transform .3s var(--ease), opacity .3s; }
+.whatsapp-float.is-hidden { opacity: 0; pointer-events: none; transform: translateY(16px); }
+
+@media (max-width: 600px) {
+  .value__grid { grid-template-columns: 1fr; }
+}
+
 /* ---------- Location ---------- */
 .location__grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
 .location__address { font-weight: 500; color: var(--dark-600); }

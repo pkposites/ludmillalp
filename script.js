@@ -14,13 +14,18 @@ const CONFIG = {
   // Deixe vazio para enviar apenas pelo WhatsApp.
   leadEndpoint: "",
 
-  // Ofertas especiais. faixa: "his" (até 6 SM), "hmp" (até 10 SM) ou "livre".
+  // Mostra "a partir de R$ ..." só no card do Studio. false = nenhum valor na seção de tipologias.
+  mostrarAPartirDe: false,
+
+  // Tipologias. slug vai no evento whatsapp_click; refMsg completa a mensagem do WhatsApp.
+  // de/por não aparecem nos cards: são usados pelo quiz e pelo "a partir de" opcional.
+  // faixa: "his" (até 6 SM), "hmp" (até 10 SM) ou "livre".
   // selo (opcional): texto de destaque no card, ex.: "Mais procurada".
   unidades: [
-    { id: "studio-his", nome: "Studio", tipologia: "Studio", faixa: "his", area: "24,98 m²", unidade: "1004", vaga: "Sem vaga", de: 371600, por: 329000 },
-    { id: "1d-hmp", nome: "1 dormitório", tipologia: "1 dormitório", faixa: "hmp", area: "27,99 m²", unidade: "524", vaga: "Sem vaga", de: 535640, por: 509000 },
-    { id: "2d", nome: "2 dormitórios", tipologia: "2 dormitórios", faixa: "livre", area: "51,31 m²", unidade: "1404", vaga: "1 vaga", de: 1067410, por: 995000, selo: "Mais procurada" },
-    { id: "3d", nome: "3 dormitórios", tipologia: "3 dormitórios", faixa: "livre", area: "68,69 m²", unidade: "602", vaga: "1 vaga", de: 1507200, por: 1260000 },
+    { id: "studio-his", slug: "studio", refMsg: "do Studio", diferencial: "Studio com terraço a 4 minutos a pé do metrô Ana Rosa. Ótimo para morar ou investir.", nome: "Studio", tipologia: "Studio", faixa: "his", area: "24,98 m²", unidade: "1004", vaga: "Sem vaga", de: 371600, por: 329000 },
+    { id: "1d-hmp", slug: "1d", refMsg: "da unidade de 1 dormitório", diferencial: "Quarto separado da sala, para mais conforto e privacidade no dia a dia.", nome: "1 dormitório", tipologia: "1 dormitório", faixa: "hmp", area: "27,99 m²", unidade: "524", vaga: "Sem vaga", de: 535640, por: 509000 },
+    { id: "2d", slug: "2d", refMsg: "da unidade de 2 dormitórios", diferencial: "A metragem mais procurada do empreendimento, com vaga de garagem.", nome: "2 dormitórios", tipologia: "2 dormitórios", faixa: "livre", area: "51,31 m²", unidade: "1404", vaga: "1 vaga", de: 1067410, por: 995000, selo: "Mais procurada" },
+    { id: "3d", slug: "3d", refMsg: "da unidade de 3 dormitórios", diferencial: "Espaço de sobra para a família crescer, com vaga de garagem.", nome: "3 dormitórios", tipologia: "3 dormitórios", faixa: "livre", area: "68,69 m²", unidade: "602", vaga: "1 vaga", de: 1507200, por: 1260000 },
   ],
 };
 
@@ -213,36 +218,50 @@ function bindWhatsappLinks(root = document) {
     el.dataset.leadBound = "1";
     el.addEventListener("click", (e) => {
       e.preventDefault();
+      if (el.dataset.tipologia) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: "whatsapp_click", tipologia: el.dataset.tipologia, origem: el.dataset.origem });
+      }
       const respostas = el.dataset.interesse ? { Interesse: el.dataset.interesse } : null;
       abrirPassoContato(whatsappUrl(el.dataset.whatsapp), respostas);
     });
   });
 }
 
-/* ---------- Cards de ofertas ---------- */
+/* ---------- Cards de tipologias (sem valores) ---------- */
+// O preço só vai pelo WhatsApp: o card leva à conversa com a Ludmilla.
 const maxDesconto = Math.max(...CONFIG.unidades.map((u) => u.de - u.por));
 $("#offersGrid").innerHTML = CONFIG.unidades
   .map((u) => {
-    const desconto = u.de - u.por;
     // Selo manual (campo "selo") tem prioridade sobre o selo automático de maior desconto
-    const selo = u.selo || (desconto === maxDesconto ? "Maior desconto" : "");
-    const destaque = !!selo;
+    const selo = u.selo || (u.de - u.por === maxDesconto ? "Maior desconto" : "");
+    const aPartirDe =
+      CONFIG.mostrarAPartirDe && u.slug === "studio"
+        ? `<p class="offer__from-price">a partir de <strong>${brl(u.por)}</strong></p>`
+        : "";
     return `
-      <article class="offer reveal${destaque ? " offer--featured" : ""}">
+      <article class="offer reveal${selo ? " offer--featured" : ""}">
         ${selo ? `<span class="offer__ribbon${u.selo ? " offer__ribbon--gold" : ""}">${selo}</span>` : ""}
-        <span class="offer__tag">${u.vaga === "Sem vaga" ? "Sem vaga" : "Com vaga"}</span>
+        <span class="offer__tag">Condição especial de lançamento</span>
         <h3>${u.nome}</h3>
-        <div class="offer__meta"><span>${u.area}</span><span>Unidade ${u.unidade}</span></div>
-        <div class="offer__prices">
-          <div class="offer__from">De <s>${brl(u.de)}</s></div>
-          <div class="offer__to"><small>por</small><strong>${brl(u.por)}</strong></div>
-          <span class="offer__save">Economia de ${brl(desconto)}</span>
-        </div>
-        <a href="#" class="btn btn--dark" data-interesse="${u.nome} · unidade ${u.unidade}" data-whatsapp="Olá, Ludmilla! Gostaria de saber mais sobre o ${u.nome} (unidade ${u.unidade}) do ${CONFIG.empreendimento}, anunciado por ${brl(u.por)}.">Saber mais sobre esta unidade</a>
+        <div class="offer__meta"><span>${u.area}</span><span>${u.vaga}</span></div>
+        <p class="offer__diff">${u.diferencial}</p>
+        ${aPartirDe}
+        <a href="#" class="btn btn--dark offer__cta" data-tipologia="${u.slug}" data-origem="cards_precos"
+          data-interesse="${u.nome}"
+          data-whatsapp="Olá Ludmilla, vi o ${CONFIG.empreendimento} e quero a tabela e as condições ${u.refMsg}">Quero a tabela e as condições desta unidade</a>
       </article>`;
   })
   .join("");
 bindWhatsappLinks();
+
+// O botão flutuante de WhatsApp sai de cena enquanto os cards de tipologia estão na tela
+if ("IntersectionObserver" in window) {
+  const flutuante = $(".whatsapp-float");
+  new IntersectionObserver(([e]) => flutuante.classList.toggle("is-hidden", e.isIntersecting), {
+    rootMargin: "0px 0px -80px 0px",
+  }).observe($("#offersGrid"));
+}
 
 /* ---------- Fallback para fotos ainda não enviadas ---------- */
 const FALLBACK_LABELS = { retrato: "Foto da Ludmilla", fachada: "Fachada do Kaslik Ibirapuera" };
