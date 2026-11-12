@@ -18,7 +18,7 @@ const CONFIG = {
   //   "todos"  -> em todos os cards e no resultado do quiz
   //   "studio" -> só no Studio
   //   false    -> nenhum valor na página
-  mostrarAPartirDe: "todos",
+  mostrarAPartirDe: false,
 
   // Tipologias. slug vai no evento whatsapp_click; refMsg completa a mensagem do WhatsApp.
   // de/por não aparecem nos cards: são usados pelo quiz e pelo "a partir de" opcional.
