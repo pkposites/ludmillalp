@@ -14,8 +14,11 @@ const CONFIG = {
   // Deixe vazio para enviar apenas pelo WhatsApp.
   leadEndpoint: "",
 
-  // Mostra "a partir de R$ ..." só no card do Studio. false = nenhum valor na seção de tipologias.
-  mostrarAPartirDe: false,
+  // Valor de referência "a partir de R$ ..." (o preço "de/por" nunca aparece na página):
+  //   "todos"  -> em todos os cards e no resultado do quiz
+  //   "studio" -> só no Studio
+  //   false    -> nenhum valor na página
+  mostrarAPartirDe: "todos",
 
   // Tipologias. slug vai no evento whatsapp_click; refMsg completa a mensagem do WhatsApp.
   // de/por não aparecem nos cards: são usados pelo quiz e pelo "a partir de" opcional.
@@ -229,16 +232,17 @@ function bindWhatsappLinks(root = document) {
 }
 
 /* ---------- Cards de tipologias (sem valores) ---------- */
+const mostraAPartirDe = (u) =>
+  CONFIG.mostrarAPartirDe === "todos" || (CONFIG.mostrarAPartirDe === "studio" && u.slug === "studio");
 // O preço só vai pelo WhatsApp: o card leva à conversa com a Ludmilla.
 const maxDesconto = Math.max(...CONFIG.unidades.map((u) => u.de - u.por));
 $("#offersGrid").innerHTML = CONFIG.unidades
   .map((u) => {
     // Selo manual (campo "selo") tem prioridade sobre o selo automático de maior desconto
     const selo = u.selo || (u.de - u.por === maxDesconto ? "Maior desconto" : "");
-    const aPartirDe =
-      CONFIG.mostrarAPartirDe && u.slug === "studio"
-        ? `<p class="offer__from-price">a partir de <strong>${brl(u.por)}</strong></p>`
-        : "";
+    const aPartirDe = mostraAPartirDe(u)
+      ? `<p class="offer__from-price">a partir de <strong>${brl(u.por)}</strong></p>`
+      : "";
     return `
       <article class="offer reveal${selo ? " offer--featured" : ""}">
         ${selo ? `<span class="offer__ribbon${u.selo ? " offer__ribbon--gold" : ""}">${selo}</span>` : ""}
@@ -626,8 +630,8 @@ async function submitQuiz() {
   $("#resultTitle").textContent = `${primeiroNome}, separei uma ótima opção para você!`;
   $("#resultText").textContent = explanation(u, a.objetivo);
   $("#resultUnit").innerHTML = `
-    <div class="result-unit__head"><strong>${u.nome}</strong><span>${u.area} · Unidade ${u.unidade} · ${u.vaga}</span></div>
-    <div class="result-unit__price"><s>${brl(u.de)}</s><b>${brl(u.por)}</b><em>economia de ${brl(u.de - u.por)}</em></div>`;
+    <div class="result-unit__head"><strong>${u.nome}</strong><span>${u.area} · ${u.vaga}</span></div>
+    ${mostraAPartirDe(u) ? `<div class="result-unit__price"><span>a partir de</span><b>${brl(u.por)}</b></div>` : ""}`;
 
   const notas = [];
   if (ajuste) notas.push("Ajustei a sugestão ao seu perfil e orçamento. Te mostro outras opções no WhatsApp.");
@@ -645,7 +649,7 @@ async function submitQuiz() {
     `• Pagamento: ${a.pagamento}`,
     `• Prazo: ${a.prazo}`,
     "",
-    `A sugestão foi o ${u.nome} (unidade ${u.unidade}) por ${brl(u.por)}. Pode me enviar o fluxo de pagamento?`,
+    `A sugestão foi a unidade de ${u.nome}. Pode me enviar a tabela e as condições?`,
   ].join("\n");
   quizWhatsUrl = whatsappUrl(msg);
 
