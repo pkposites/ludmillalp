@@ -77,7 +77,10 @@
     <!-- ============ HERO: o empreendimento ============ -->
     <section class="hero hero--emp">
       <div class="hero__bg" aria-hidden="true">
-        <img src="assets/img/kaslik-fachada.jpg" alt="" width="1096" height="738" fetchpriority="high">
+        <picture>
+          <source srcset="assets/img/kaslik-fachada.webp" type="image/webp">
+          <img src="assets/img/kaslik-fachada.jpg" alt="" width="1096" height="738" fetchpriority="high" decoding="async">
+        </picture>
       </div>
       <div class="container hero__inner">
         <div class="hero__content">
@@ -87,16 +90,143 @@
           <p class="hero__lead">Studios, 1, 2 e 3 dormitórios a <strong>4 minutos a pé do metrô Ana Rosa</strong> e pertinho do <strong>Parque Ibirapuera</strong>. Rooftop com piscina e lazer completo.</p>
           <div class="hero__actions">
             <a href="#ofertas" class="btn btn--gold">Ver plantas e condições</a>
-            <a href="#tour" class="btn btn--ghost">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-              Assistir ao tour
-            </a>
+            <a href="#quiz" class="btn btn--ghost">Descobrir minha unidade ideal</a>
           </div>
+          <a href="#tour" class="hero__tour-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            Assistir ao tour do empreendimento
+          </a>
           <ul class="hero__stats">
             <li><strong>22 a 69 m²</strong><span>studios a 3 dorms</span></li>
             <li><strong>4 min</strong><span>a pé do metrô</span></li>
             <li><strong>Set/2028</strong><span>entrega prevista</span></li>
           </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ QUIZ ============ -->
+    <section class="section section--dark quiz-section quiz-section--top" id="quiz">
+      <div class="container quiz-section__grid">
+        <div class="quiz-section__intro reveal">
+          <span class="eyebrow eyebrow--light">Leva menos de 1 minuto</span>
+          <h2>Vamos encontrar a unidade ideal para você?</h2>
+          <p>Responda algumas perguntas rápidas e eu te mostro qual unidade do Kaslik Ibirapuera faz mais sentido para o seu momento, com o valor e a condição de pagamento.</p>
+          <ul class="checklist checklist--light">
+            <li>Sem compromisso</li>
+            <li>Atendimento direto comigo pelo WhatsApp</li>
+            <li>Seus dados ficam só comigo</li>
+          </ul>
+        </div>
+
+        <div class="quiz reveal" id="quizCard" aria-live="polite">
+          <div class="quiz__progress" aria-hidden="true"><span id="quizBar"></span></div>
+          <p class="quiz__counter" id="quizCounter">Pergunta 1 de 6</p>
+
+          <form id="quizForm" novalidate>
+            <fieldset class="quiz__step is-active" data-key="objetivo">
+              <legend>Você quer o imóvel para morar ou investir?</legend>
+              <div class="options options--2">
+                <label class="option">
+                  <input type="radio" name="objetivo" value="Morar">
+                  <span class="option__box"><span class="option__emoji" aria-hidden="true">🏡</span><strong>Morar</strong><small>Um lar para mim ou minha família</small></span>
+                </label>
+                <label class="option">
+                  <input type="radio" name="objetivo" value="Investir">
+                  <span class="option__box"><span class="option__emoji" aria-hidden="true">📈</span><strong>Investir</strong><small>Valorização ou renda com aluguel</small></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="quiz__step" data-key="tipologia">
+              <legend>Qual tipo de unidade te interessa?</legend>
+              <div class="options">
+                <label class="option option--row"><input type="radio" name="tipologia" value="Studio"><span class="option__box"><strong>Studio</strong><small>prático e compacto</small></span></label>
+                <label class="option option--row"><input type="radio" name="tipologia" value="1 dormitório"><span class="option__box"><strong>1 dormitório</strong></span></label>
+                <label class="option option--row"><input type="radio" name="tipologia" value="2 dormitórios"><span class="option__box"><strong>2 dormitórios</strong><small>com vaga</small></span></label>
+                <label class="option option--row"><input type="radio" name="tipologia" value="3 dormitórios"><span class="option__box"><strong>3 dormitórios</strong><small>com vaga</small></span></label>
+                <label class="option option--row"><input type="radio" name="tipologia" value="Ainda não sei"><span class="option__box"><strong>Ainda não sei</strong><small>me ajuda a escolher</small></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="quiz__step" data-key="investimento">
+              <legend>Quanto você pretende investir?</legend>
+              <div class="options">
+                <label class="option option--row"><input type="radio" name="investimento" value="Até R$ 350 mil" data-max="350000"><span class="option__box"><strong>Até R$ 350 mil</strong></span></label>
+                <label class="option option--row"><input type="radio" name="investimento" value="De R$ 350 a 550 mil" data-max="550000"><span class="option__box"><strong>De R$ 350 a 550 mil</strong></span></label>
+                <label class="option option--row"><input type="radio" name="investimento" value="De R$ 550 mil a 1 milhão" data-max="1000000"><span class="option__box"><strong>De R$ 550 mil a 1 milhão</strong></span></label>
+                <label class="option option--row"><input type="radio" name="investimento" value="Acima de R$ 1 milhão" data-max="999999999"><span class="option__box"><strong>Acima de R$ 1 milhão</strong></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="quiz__step" data-key="renda">
+              <legend>Qual é a sua renda familiar mensal?</legend>
+              <p class="quiz__hint">Algumas unidades têm condições especiais conforme a renda familiar.</p>
+              <div class="options">
+                <label class="option option--row"><input type="radio" name="renda" value="Até 6 salários mínimos" data-faixa="his"><span class="option__box"><strong>Até 6 salários mínimos</strong></span></label>
+                <label class="option option--row"><input type="radio" name="renda" value="De 6 a 10 salários mínimos" data-faixa="hmp"><span class="option__box"><strong>De 6 a 10 salários mínimos</strong></span></label>
+                <label class="option option--row"><input type="radio" name="renda" value="Acima de 10 salários mínimos" data-faixa="livre"><span class="option__box"><strong>Acima de 10 salários mínimos</strong></span></label>
+                <label class="option option--row"><input type="radio" name="renda" value="Prefiro não informar" data-faixa="nd"><span class="option__box"><strong>Prefiro não informar</strong></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="quiz__step" data-key="pagamento">
+              <legend>Como pretende pagar?</legend>
+              <div class="options">
+                <label class="option option--row"><input type="radio" name="pagamento" value="Financiamento bancário"><span class="option__box"><strong>Financiamento bancário</strong></span></label>
+                <label class="option option--row"><input type="radio" name="pagamento" value="Financiamento + FGTS"><span class="option__box"><strong>Financiamento + FGTS</strong></span></label>
+                <label class="option option--row"><input type="radio" name="pagamento" value="Parcelado direto com a incorporadora"><span class="option__box"><strong>Parcelado com a incorporadora</strong></span></label>
+                <label class="option option--row"><input type="radio" name="pagamento" value="À vista"><span class="option__box"><strong>À vista</strong></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="quiz__step" data-key="prazo">
+              <legend>Quando você pretende comprar?</legend>
+              <div class="options">
+                <label class="option option--row"><input type="radio" name="prazo" value="O quanto antes"><span class="option__box"><strong>O quanto antes</strong></span></label>
+                <label class="option option--row"><input type="radio" name="prazo" value="Nos próximos 3 meses"><span class="option__box"><strong>Nos próximos 3 meses</strong></span></label>
+                <label class="option option--row"><input type="radio" name="prazo" value="Em até 6 meses"><span class="option__box"><strong>Em até 6 meses</strong></span></label>
+                <label class="option option--row"><input type="radio" name="prazo" value="Ainda estou pesquisando"><span class="option__box"><strong>Ainda estou pesquisando</strong></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="quiz__step" data-key="contato">
+              <legend>Quase lá! Para onde envio sua recomendação?</legend>
+              <div class="field">
+                <label for="nome">Seu nome</label>
+                <input type="text" id="nome" name="nome" data-clarity-mask="true" autocomplete="name" placeholder="Como posso te chamar?" required>
+              </div>
+              <div class="field">
+                <label for="whatsapp">WhatsApp</label>
+                <input type="tel" id="whatsapp" name="whatsapp" data-clarity-mask="true" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
+              </div>
+              <label class="consent">
+                <input type="checkbox" id="quizAceite">
+                <span>Aceito compartilhar com a Ludmilla os dados da minha visita (origem do anúncio e cookies) para medir e melhorar os anúncios.</span>
+              </label>
+              <p class="field__error" id="formError" role="alert"></p>
+            </fieldset>
+
+            <div class="quiz__nav">
+              <button type="button" class="btn btn--link" id="quizBack" hidden>← Voltar</button>
+              <button type="button" class="btn btn--gold" id="quizNext" disabled>Continuar</button>
+            </div>
+            <p class="lead-legal" id="quizLegal" hidden>Ao continuar, você concorda em ser contatado pelo WhatsApp. Veja a <a href="https://cadeolead.com.br/privacidade/pk_c3a0776c3d574524b7e02cf0af6deac5" target="_blank" rel="noopener">Política de privacidade</a>.</p>
+          </form>
+
+          <div class="quiz__result" id="quizResult" hidden>
+            <span class="quiz__result-icon" aria-hidden="true">✓</span>
+            <h3 id="resultTitle">Pronto!</h3>
+            <p id="resultText"></p>
+            <div class="result-unit" id="resultUnit"></div>
+            <p class="quiz__result-note" id="resultNote"></p>
+            <a href="#" class="btn btn--whatsapp" id="resultWhatsapp">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+              Receber minha simulação no WhatsApp
+            </a>
+            <p class="lead-legal">Ao continuar, você concorda em ser contatado pelo WhatsApp. Veja a <a href="https://cadeolead.com.br/privacidade/pk_c3a0776c3d574524b7e02cf0af6deac5" target="_blank" rel="noopener">Política de privacidade</a>.</p>
+            <button type="button" class="btn btn--link" id="quizRestart">Refazer o quiz</button>
+          </div>
         </div>
       </div>
     </section>
@@ -324,132 +454,6 @@
       </div>
     </section>
 
-    <!-- ============ QUIZ ============ -->
-    <section class="section section--dark quiz-section" id="quiz">
-      <div class="container quiz-section__grid">
-        <div class="quiz-section__intro reveal">
-          <span class="eyebrow eyebrow--light">Leva menos de 1 minuto</span>
-          <h2>Vamos encontrar a unidade ideal para você?</h2>
-          <p>Responda algumas perguntas rápidas e eu te mostro qual unidade do Kaslik Ibirapuera faz mais sentido para o seu momento, com o valor e a condição de pagamento.</p>
-          <ul class="checklist checklist--light">
-            <li>Sem compromisso</li>
-            <li>Atendimento direto comigo pelo WhatsApp</li>
-            <li>Seus dados ficam só comigo</li>
-          </ul>
-        </div>
-
-        <div class="quiz reveal" id="quizCard" aria-live="polite">
-          <div class="quiz__progress" aria-hidden="true"><span id="quizBar"></span></div>
-          <p class="quiz__counter" id="quizCounter">Pergunta 1 de 6</p>
-
-          <form id="quizForm" novalidate>
-            <fieldset class="quiz__step is-active" data-key="objetivo">
-              <legend>Você quer o imóvel para morar ou investir?</legend>
-              <div class="options options--2">
-                <label class="option">
-                  <input type="radio" name="objetivo" value="Morar">
-                  <span class="option__box"><span class="option__emoji" aria-hidden="true">🏡</span><strong>Morar</strong><small>Um lar para mim ou minha família</small></span>
-                </label>
-                <label class="option">
-                  <input type="radio" name="objetivo" value="Investir">
-                  <span class="option__box"><span class="option__emoji" aria-hidden="true">📈</span><strong>Investir</strong><small>Valorização ou renda com aluguel</small></span>
-                </label>
-              </div>
-            </fieldset>
-
-            <fieldset class="quiz__step" data-key="tipologia">
-              <legend>Qual tipo de unidade te interessa?</legend>
-              <div class="options">
-                <label class="option option--row"><input type="radio" name="tipologia" value="Studio"><span class="option__box"><strong>Studio</strong><small>prático e compacto</small></span></label>
-                <label class="option option--row"><input type="radio" name="tipologia" value="1 dormitório"><span class="option__box"><strong>1 dormitório</strong></span></label>
-                <label class="option option--row"><input type="radio" name="tipologia" value="2 dormitórios"><span class="option__box"><strong>2 dormitórios</strong><small>com vaga</small></span></label>
-                <label class="option option--row"><input type="radio" name="tipologia" value="3 dormitórios"><span class="option__box"><strong>3 dormitórios</strong><small>com vaga</small></span></label>
-                <label class="option option--row"><input type="radio" name="tipologia" value="Ainda não sei"><span class="option__box"><strong>Ainda não sei</strong><small>me ajuda a escolher</small></span></label>
-              </div>
-            </fieldset>
-
-            <fieldset class="quiz__step" data-key="investimento">
-              <legend>Quanto você pretende investir?</legend>
-              <div class="options">
-                <label class="option option--row"><input type="radio" name="investimento" value="Até R$ 350 mil" data-max="350000"><span class="option__box"><strong>Até R$ 350 mil</strong></span></label>
-                <label class="option option--row"><input type="radio" name="investimento" value="De R$ 350 a 550 mil" data-max="550000"><span class="option__box"><strong>De R$ 350 a 550 mil</strong></span></label>
-                <label class="option option--row"><input type="radio" name="investimento" value="De R$ 550 mil a 1 milhão" data-max="1000000"><span class="option__box"><strong>De R$ 550 mil a 1 milhão</strong></span></label>
-                <label class="option option--row"><input type="radio" name="investimento" value="Acima de R$ 1 milhão" data-max="999999999"><span class="option__box"><strong>Acima de R$ 1 milhão</strong></span></label>
-              </div>
-            </fieldset>
-
-            <fieldset class="quiz__step" data-key="renda">
-              <legend>Qual é a sua renda familiar mensal?</legend>
-              <p class="quiz__hint">Algumas unidades têm condições especiais conforme a renda familiar.</p>
-              <div class="options">
-                <label class="option option--row"><input type="radio" name="renda" value="Até 6 salários mínimos" data-faixa="his"><span class="option__box"><strong>Até 6 salários mínimos</strong></span></label>
-                <label class="option option--row"><input type="radio" name="renda" value="De 6 a 10 salários mínimos" data-faixa="hmp"><span class="option__box"><strong>De 6 a 10 salários mínimos</strong></span></label>
-                <label class="option option--row"><input type="radio" name="renda" value="Acima de 10 salários mínimos" data-faixa="livre"><span class="option__box"><strong>Acima de 10 salários mínimos</strong></span></label>
-                <label class="option option--row"><input type="radio" name="renda" value="Prefiro não informar" data-faixa="nd"><span class="option__box"><strong>Prefiro não informar</strong></span></label>
-              </div>
-            </fieldset>
-
-            <fieldset class="quiz__step" data-key="pagamento">
-              <legend>Como pretende pagar?</legend>
-              <div class="options">
-                <label class="option option--row"><input type="radio" name="pagamento" value="Financiamento bancário"><span class="option__box"><strong>Financiamento bancário</strong></span></label>
-                <label class="option option--row"><input type="radio" name="pagamento" value="Financiamento + FGTS"><span class="option__box"><strong>Financiamento + FGTS</strong></span></label>
-                <label class="option option--row"><input type="radio" name="pagamento" value="Parcelado direto com a incorporadora"><span class="option__box"><strong>Parcelado com a incorporadora</strong></span></label>
-                <label class="option option--row"><input type="radio" name="pagamento" value="À vista"><span class="option__box"><strong>À vista</strong></span></label>
-              </div>
-            </fieldset>
-
-            <fieldset class="quiz__step" data-key="prazo">
-              <legend>Quando você pretende comprar?</legend>
-              <div class="options">
-                <label class="option option--row"><input type="radio" name="prazo" value="O quanto antes"><span class="option__box"><strong>O quanto antes</strong></span></label>
-                <label class="option option--row"><input type="radio" name="prazo" value="Nos próximos 3 meses"><span class="option__box"><strong>Nos próximos 3 meses</strong></span></label>
-                <label class="option option--row"><input type="radio" name="prazo" value="Em até 6 meses"><span class="option__box"><strong>Em até 6 meses</strong></span></label>
-                <label class="option option--row"><input type="radio" name="prazo" value="Ainda estou pesquisando"><span class="option__box"><strong>Ainda estou pesquisando</strong></span></label>
-              </div>
-            </fieldset>
-
-            <fieldset class="quiz__step" data-key="contato">
-              <legend>Quase lá! Para onde envio sua recomendação?</legend>
-              <div class="field">
-                <label for="nome">Seu nome</label>
-                <input type="text" id="nome" name="nome" data-clarity-mask="true" autocomplete="name" placeholder="Como posso te chamar?" required>
-              </div>
-              <div class="field">
-                <label for="whatsapp">WhatsApp</label>
-                <input type="tel" id="whatsapp" name="whatsapp" data-clarity-mask="true" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" required>
-              </div>
-              <label class="consent">
-                <input type="checkbox" id="quizAceite">
-                <span>Aceito compartilhar com a Ludmilla os dados da minha visita (origem do anúncio e cookies) para medir e melhorar os anúncios.</span>
-              </label>
-              <p class="field__error" id="formError" role="alert"></p>
-            </fieldset>
-
-            <div class="quiz__nav">
-              <button type="button" class="btn btn--link" id="quizBack" hidden>← Voltar</button>
-              <button type="button" class="btn btn--gold" id="quizNext" disabled>Continuar</button>
-            </div>
-            <p class="lead-legal" id="quizLegal" hidden>Ao continuar, você concorda em ser contatado pelo WhatsApp. Veja a <a href="https://cadeolead.com.br/privacidade/pk_c3a0776c3d574524b7e02cf0af6deac5" target="_blank" rel="noopener">Política de privacidade</a>.</p>
-          </form>
-
-          <div class="quiz__result" id="quizResult" hidden>
-            <span class="quiz__result-icon" aria-hidden="true">✓</span>
-            <h3 id="resultTitle">Pronto!</h3>
-            <p id="resultText"></p>
-            <div class="result-unit" id="resultUnit"></div>
-            <p class="quiz__result-note" id="resultNote"></p>
-            <a href="#" class="btn btn--whatsapp" id="resultWhatsapp">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Receber minha simulação no WhatsApp
-            </a>
-            <p class="lead-legal">Ao continuar, você concorda em ser contatado pelo WhatsApp. Veja a <a href="https://cadeolead.com.br/privacidade/pk_c3a0776c3d574524b7e02cf0af6deac5" target="_blank" rel="noopener">Política de privacidade</a>.</p>
-            <button type="button" class="btn btn--link" id="quizRestart">Refazer o quiz</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ============ FAQ ============ -->
     <section class="section faq" id="faq">
       <div class="container container--narrow">
@@ -508,6 +512,14 @@
       <p>Imagens meramente ilustrativas. Valores, metragens e condições sujeitos a alteração sem aviso prévio e à disponibilidade. Algumas unidades estão sujeitas a enquadramento de renda. © <span id="year"></span> Ludmilla · Corretora de Imóveis.</p>
     </div>
   </footer>
+
+  <!-- Barra fixa no rodapé (celular, até 768px): substitui o botão flutuante -->
+  <div class="mobile-bar" id="mobileBar">
+    <a href="#quiz" class="btn btn--gold mobile-bar__cta" id="mobileBarCta">Ver tabela e condições</a>
+    <a href="#" class="mobile-bar__whats" data-whatsapp="Olá, Ludmilla! Vi a página do Kaslik Ibirapuera e gostaria de mais informações." aria-label="Falar no WhatsApp">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+    </a>
+  </div>
 
   <!-- WhatsApp flutuante -->
   <a href="#" class="whatsapp-float" data-whatsapp="Olá, Ludmilla! Vi a página do Kaslik Ibirapuera e gostaria de mais informações." aria-label="Falar no WhatsApp">

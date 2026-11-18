@@ -267,6 +267,30 @@ if ("IntersectionObserver" in window) {
   }).observe($("#offersGrid"));
 }
 
+/* ---------- Barra fixa no rodapé (celular) ---------- */
+// Some enquanto o quiz ou o passo de contato (formulário) estão na tela.
+const barra = $("#mobileBar");
+let quizNaTela = false;
+const atualizarBarra = () => barra.classList.toggle("is-hidden", quizNaTela || !leadModal.hidden);
+if ("IntersectionObserver" in window) {
+  new IntersectionObserver(
+    ([e]) => {
+      quizNaTela = e.isIntersecting;
+      atualizarBarra();
+    },
+    { rootMargin: "0px 0px -15% 0px" }
+  ).observe($("#quizCard"));
+}
+new MutationObserver(atualizarBarra).observe(leadModal, { attributes: true, attributeFilter: ["hidden"] });
+
+// Antes do quiz: leva ao quiz. Quiz já concluído: abre o passo de contato (formulário atual).
+$("#mobileBarCta").addEventListener("click", (e) => {
+  clarityEvento("barra_tabela");
+  if ($("#quizResult").hidden) return; // segue a âncora #quiz, com rolagem suave
+  e.preventDefault();
+  abrirPassoContato(whatsappUrl(`Olá Ludmilla, vi o ${CONFIG.empreendimento} e quero a tabela e as condições.`), respostasQuiz);
+});
+
 /* ---------- Fallback para fotos ainda não enviadas ---------- */
 const FALLBACK_LABELS = { retrato: "Foto da Ludmilla", fachada: "Fachada do Kaslik Ibirapuera" };
 const fallbackIcon =
