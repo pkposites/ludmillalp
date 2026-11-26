@@ -139,10 +139,18 @@ function dispararLead(origem) {
 // Encaminhamento para o WhatsApp = conversão: registra no Cadê o Lead, dispara o Lead
 // do pixel e abre o WhatsApp numa aba nova (a página continua aberta na aba atual).
 function abrirWhatsApp(url, respostas, origemLead) {
-  window.LeadHub?.identify({ name: contato.nome, phone: contato.telefone });
-  if (respostas) window.LeadHub?.set(respostas);
-  const destino = window.LeadHub ? window.LeadHub.whatsappUrl(url) : url;
-  dispararLead(origemLead);
+  // Falha num script de terceiros (Cadê o Lead, pixel) nunca impede o WhatsApp de abrir.
+  let destino = url;
+  try {
+    window.LeadHub?.identify({ name: contato.nome, phone: contato.telefone });
+    if (respostas) window.LeadHub?.set(respostas);
+    if (window.LeadHub) destino = window.LeadHub.whatsappUrl(url) || url;
+  } catch (e) {
+    destino = url;
+  }
+  try {
+    dispararLead(origemLead);
+  } catch (e) {}
   clarityEvento("whatsapp_encaminhado");
   clarityTag("conversao", origemLead);
   try {
@@ -685,6 +693,20 @@ async function submitQuiz() {
   clarityTag("unidade_sugerida", u.nome);
   $("#quizCard").scrollIntoView({ behavior: "smooth", block: "center" });
 }
+
+// Topo: "Morar" / "Investir" respondem a pergunta 1 e levam o quiz para a pergunta 2.
+// Usa o próprio formulário do quiz, então os eventos são os mesmos (quiz_etapa_2...).
+$$(".hero__opt").forEach((bt) =>
+  bt.addEventListener("click", () => {
+    const quizEmAndamento = current !== 0 || !$("#quizResult").hidden;
+    const radio = $(`#quizForm input[name="objetivo"][value="${bt.dataset.objetivo}"]`);
+    if (!quizEmAndamento && radio) {
+      radio.checked = true;
+      radio.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+    $("#quizCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  })
+);
 
 $("#quizRestart").addEventListener("click", () => {
   form.reset();

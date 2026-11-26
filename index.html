@@ -45,9 +45,8 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -85,17 +84,22 @@
       <div class="container hero__inner">
         <div class="hero__content">
           <span class="hero__launch">Condição especial de lançamento</span>
-          <span class="eyebrow eyebrow--light">Vila Mariana · São Paulo</span>
           <h1>Kaslik Ibirapuera</h1>
-          <p class="hero__lead">Studios, 1, 2 e 3 dormitórios a <strong>4 minutos a pé do metrô Ana Rosa</strong> e pertinho do <strong>Parque Ibirapuera</strong>. Rooftop com piscina e lazer completo.</p>
-          <div class="hero__actions">
-            <a href="#ofertas" class="btn btn--gold">Ver plantas e condições</a>
-            <a href="#quiz" class="btn btn--ghost">Descobrir minha unidade ideal</a>
+          <p class="hero__lead">Studios, 1, 2 e 3 dorms na Vila Mariana, a <strong>4 min a pé do metrô Ana Rosa</strong> e pertinho do <strong>Parque Ibirapuera</strong>.</p>
+
+          <!-- 1ª pergunta do quiz já no topo: a resposta segue para a pergunta 2 do quiz -->
+          <div class="hero__start" role="group" aria-labelledby="heroPergunta">
+            <p class="hero__start-q" id="heroPergunta">Descubra sua unidade ideal: <strong>você quer morar ou investir?</strong></p>
+            <div class="hero__start-opts">
+              <button type="button" class="hero__opt" data-objetivo="Morar"><span aria-hidden="true">🏡</span> Morar</button>
+              <button type="button" class="hero__opt" data-objetivo="Investir"><span aria-hidden="true">📈</span> Investir</button>
+            </div>
           </div>
-          <a href="#tour" class="hero__tour-link">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            Assistir ao tour do empreendimento
-          </a>
+          <p class="hero__links">
+            <a href="#ofertas">Ver plantas e condições</a>
+            <span aria-hidden="true">·</span>
+            <a href="#tour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Assistir ao tour</a>
+          </p>
           <ul class="hero__stats">
             <li><strong>22 a 69 m²</strong><span>studios a 3 dorms</span></li>
             <li><strong>4 min</strong><span>a pé do metrô</span></li>
