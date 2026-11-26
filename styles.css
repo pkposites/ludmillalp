@@ -1,3 +1,28 @@
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 500 600;
+  font-display: swap;
+  src: url("assets/fonts/cormorant-garamond-italic-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url("assets/fonts/cormorant-garamond-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ==========================================================================
    Ludmilla · Corretora de Imóveis — Landing page Kaslik Ibirapuera
    ========================================================================== */
@@ -221,6 +246,31 @@ em { font-style: italic; color: var(--gold-400); }
 .hero__tour-link { display: inline-flex; align-items: center; gap: 8px; margin: -18px 0 28px; color: var(--on-dark); font-size: .92rem; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
 .hero__tour-link svg { width: 14px; height: 14px; fill: currentColor; }
 .hero__tour-link:hover { color: var(--gold-400); }
+
+/* Topo: 1ª pergunta do quiz */
+.hero__start { margin: 26px 0 18px; }
+.hero__start-q { margin: 0 0 12px; color: var(--on-dark); font-size: 1rem; }
+.hero__start-q strong { color: var(--white); }
+.hero__start-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 440px; }
+.hero__opt {
+  display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; padding: 12px 16px;
+  border-radius: 14px; border: 1.5px solid rgba(216, 180, 124, .7); background: rgba(255, 255, 255, .1);
+  color: var(--white); font: 600 1.05rem/1 var(--font-sans); cursor: pointer;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.hero__opt span { font-size: 1.35rem; }
+.hero__opt:hover, .hero__opt:active { background: var(--gold-500); border-color: var(--gold-500); color: var(--dark-900); transform: translateY(-1px); }
+.hero__opt:focus-visible { outline: 2px solid var(--gold-400); outline-offset: 2px; }
+.hero__links { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0 0 26px; font-size: .92rem; color: var(--on-dark-muted); }
+.hero__links a { display: inline-flex; align-items: center; gap: 6px; color: var(--on-dark); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
+.hero__links a:hover { color: var(--gold-400); }
+.hero__links svg { width: 13px; height: 13px; fill: currentColor; }
+@media (max-width: 600px) {
+  .hero--emp { padding-top: calc(var(--header-h) + 8px); }
+  .hero--emp h1 { font-size: 2.7rem; }
+  .hero__start { margin: 20px 0 14px; }
+  .hero__links { margin-bottom: 20px; }
+}
 
 /* Barra fixa no rodapé (só celular) */
 .mobile-bar { display: none; }
